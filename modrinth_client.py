@@ -57,7 +57,5 @@ class ModrinthClient:
 
     def download_mod_file(self, filename: str, url: str):
         response = self.make_request(self.METHOD_GET, url, binary=True)
-        print(response.data)
-        exit()
         with open(f'mods/{filename}', 'wb') as file:
             file.write(response.data)
