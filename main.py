@@ -81,7 +81,7 @@ if __name__ == '__main__':
             print(f'[yellow] Already downloaded {filename}[/yellow]')
             continue
 
-        if mod.filename != filename:
+        if mod and mod.filename != filename:
             print(f'[green]New version of {project["title"]} found, deleting old version[/green]')
             mod_file_delete(mod.filename)
             Mod.update(title=project['title'], slug=project['slug'], filename=filename). \

@@ -23,7 +23,10 @@ class ModrinthClient:
 
     def make_request(self, method: str, uri: str, auth: bool = False,
                      binary: bool = False) -> urllib3.response.BaseHTTPResponse | None:
-        url = f'{self.MODRINTH_API_URL + uri}'
+        if binary is False:
+            url = f'{self.MODRINTH_API_URL + uri}'
+        else:
+            url = f'{uri}'
         client = self.get_client()
         headers = urllib3.HTTPHeaderDict()
         headers.add('User-Agent', os.getenv('USERAGENT'))
@@ -54,5 +57,7 @@ class ModrinthClient:
 
     def download_mod_file(self, filename: str, url: str):
         response = self.make_request(self.METHOD_GET, url, binary=True)
+        print(response.data)
+        exit()
         with open(f'mods/{filename}', 'wb') as file:
             file.write(response.data)
