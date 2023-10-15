@@ -34,7 +34,7 @@ class ModrinthClient:
         if binary:
             headers.add('Accept', 'application/octet-stream')
         response = client.request(method, url, headers=headers)
-        if binary is False and response.status is not 200:
+        if binary is False and response.status != 200:
             print(f'[red]Error: {response.status}[/red]')
             return
         return response
