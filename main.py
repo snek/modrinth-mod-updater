@@ -66,6 +66,9 @@ if __name__ == '__main__':
             continue
 
         versions = client.get_project_versions(project['slug'])
+        if len(versions) == 0:
+            print(f'[red]Did not find {project["slug"]} for game version {game_version}[/red]')
+            continue
         filename = versions[0]['files'][0]['filename']
         url = versions[0]['files'][0]['url']
 
