@@ -1,0 +1,5 @@
+.env
+mods/
+modrinth-mod-updater
+*.log
+mods.db
