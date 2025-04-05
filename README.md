@@ -13,36 +13,25 @@ A tool to automatically download and update Minecraft mods from the Modrinth pla
 
 ## Configuration
 
-Create a `.env` file in the project directory with the following variables:
+Configuration is managed via environment variables or a `.env` file in the project root. Create a `.env` file by copying `.env.example`:
 
-```
-MINECRAFT_INSTALLATION=server_side
-MINECRAFT_LOADER=fabric
-MINECRAFT_VERSION=1.21.5
-MODRINTH_API_KEY=your_token_here
-USERAGENT=your-user/modrinth-mod-updater (your-email@example.com)
-MODRINTH_USER=your-username
-
-# Database path (optional, defaults to mods.db in the current directory)
-DATABASE_PATH=mods.db
-
-# Keep old mod versions when updating (optional, defaults to false)
-# Set to true to move old versions to mods/versions instead of deleting
-KEEP_OLD_VERSIONS=false
+```bash
+cp .env.example .env
 ```
 
-### Configuration Options
+Then, edit `.env` with your settings.
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `MINECRAFT_INSTALLATION` | Type of Minecraft installation (e.g., `server_side`, `client`) | None (required) |
-| `MINECRAFT_LOADER` | Mod loader (e.g., `fabric`, `forge`, `quilt`) | None (required) |
-| `MINECRAFT_VERSION` | Minecraft version (e.g., `1.21.5`) | None (required) |
-| `MODRINTH_API_KEY` | Your Modrinth API key | None (required) |
-| `USERAGENT` | User agent for API requests | Default generic agent |
-| `MODRINTH_USER` | Your Modrinth username | None (required) |
-| `DATABASE_PATH` | Path to SQLite database file | `mods.db` in the current directory |
-| `KEEP_OLD_VERSIONS` | Whether to keep old versions of mods when updating | `false` |
+| Environment Variable          | Description                                                                                                                                                                                             | Default Value |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `MODRINTH_API_KEY`            | **Required.** Your personal Modrinth API key. Needed to fetch your followed projects. Obtain from [Modrinth Settings](https://modrinth.com/settings/account).                                          | *None*        |
+| `MINECRAFT_VERSION`           | **Required.** The target Minecraft version (e.g., `1.20.1`).                                                                                                                                           | *None*        |
+| `MINECRAFT_DIR`               | **Required.** The path to your Minecraft instance directory (e.g., `/home/user/.minecraft` or `./my_instance`). The updater will create `mods`, `shaderpacks`, and `resourcepacks` subdirectories here if needed. The database file (`modrinth-updater.db`) is also stored here. | *None*        |
+| `MINECRAFT_LOADER`            | The mod loader to check compatibility against (e.g., `fabric`, `forge`, `neoforge`, `quilt`). Only applies to projects of type `mod`.                                                                                             | `fabric`      |
+| `MINECRAFT_INSTALLATION_TYPE` | Filters projects based on side compatibility. Use `client` or `server`.                                                                                                                                     | `client`      |
+| `KEEP_OLD_VERSIONS`           | If `true`, keeps old files in a `versions` subdirectory within the respective `mods`, `shaderpacks`, or `resourcepacks` folder.                                                                               | `false`       |
+| `USERAGENT`                   | Custom User-Agent string for Modrinth API requests. Recommended to include contact info (e.g., `MyApp/1.0 (contact@example.com)`).                                                               | See code      |
+| `LOG_LEVEL`                   | Set logging verbosity (`debug`, `info`, `warn`, `error`).                                                                                                                                              | `info`        |
+| `LOG_FORMAT`                  | Set logging output format (`text` or `json`).                                                                                                                                                          | `text`        |
 
 ## Database
 

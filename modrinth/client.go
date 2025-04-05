@@ -121,11 +121,15 @@ func (c *Client) GetFollowedProjects() ([]Project, error) {
 }
 
 // GetProjectVersions retrieves versions for a specific project, filtered by game version and loader.
-func (c *Client) GetProjectVersions(slug, gameVersion, loader string) ([]Version, error) {
+func (c *Client) GetProjectVersions(slug, projectType, gameVersion, loader string) ([]Version, error) {
 	params := url.Values{}
 	// Construct JSON array strings manually to avoid Sprintf issues
 	params.Add("game_versions", "[\""+gameVersion+"\"]")
-	params.Add("loaders", "[\""+loader+"\"]")
+
+	// Only add loaders parameter if the project type is "mod"
+	if projectType == "mod" {
+		params.Add("loaders", "[\""+loader+"\"]")
+	}
 
 	var versions []Version
 	_, err := c.makeRequest("GET", fmt.Sprintf("/project/%s/version", slug), params, &versions, true, false) // Assuming auth might be needed based on Python client
@@ -145,32 +149,37 @@ func (c *Client) GetProject(slug string) (*Project, error) {
 	return &project, nil
 }
 
-// DownloadModFile downloads a mod file from the given URL and saves it to the specified filename within the 'mods' directory.
-func (c *Client) DownloadModFile(log *zap.SugaredLogger, filename, downloadURL string) error {
-	modsDir := "mods"
-	if err := os.MkdirAll(modsDir, 0755); err != nil {
-		return fmt.Errorf("failed to create mods directory '%s': %w", modsDir, err)
+// DownloadModFile downloads a mod file from the given URL and saves it to the specified destination path.
+func (c *Client) DownloadModFile(log *zap.SugaredLogger, destinationPath, downloadURL string) error {
+	// Ensure the directory exists (it should have been created by LoadConfig or runUpdate)
+	dir := filepath.Dir(destinationPath)
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		// This should ideally not happen if config loading/runUpdate worked
+		log.Warnw("Target directory for download does not exist, attempting to create", zap.String("directory", dir))
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			return fmt.Errorf("failed to create target directory '%s': %w", dir, err)
+		}
+	} else if err != nil {
+		return fmt.Errorf("failed to check target directory '%s': %w", dir, err)
 	}
-
-	filePath := filepath.Join(modsDir, filename)
 
 	resp, err := c.makeRequest("GET", downloadURL, nil, nil, false, true) // No auth needed for direct download URL, binary=true
 	if err != nil {
-		return fmt.Errorf("failed to start download for '%s' from %s: %w", filename, downloadURL, err)
+		return fmt.Errorf("failed to start download for '%s' from %s: %w", filepath.Base(destinationPath), downloadURL, err)
 	}
 	defer resp.Body.Close()
 
-	outFile, err := os.Create(filePath)
+	outFile, err := os.Create(destinationPath)
 	if err != nil {
-		return fmt.Errorf("failed to create file '%s': %w", filePath, err)
+		return fmt.Errorf("failed to create file '%s': %w", destinationPath, err)
 	}
 	defer outFile.Close()
 
 	_, err = io.Copy(outFile, resp.Body)
 	if err != nil {
 		// Attempt to remove partially downloaded file on error
-		os.Remove(filePath)
-		return fmt.Errorf("failed to write downloaded content to '%s': %w", filePath, err)
+		os.Remove(destinationPath)
+		return fmt.Errorf("failed to write downloaded content to '%s': %w", destinationPath, err)
 	}
 
 	return nil
@@ -195,6 +204,8 @@ type Project struct {
 	Color       int    `json:"color"`    // Add Color (integer representation)
 	Updated     string `json:"updated"`  // Add Last Updated Timestamp (string for simplicity)
 	ProjectType string `json:"project_type"` // e.g., "mod"
+	ClientSide  string `json:"client_side"` // Added: required, optional, unsupported, unknown
+	ServerSide  string `json:"server_side"` // Added: required, optional, unsupported, unknown
 	// Add other fields as needed (description, etc.)
 }
 
