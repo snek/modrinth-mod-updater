@@ -5,7 +5,8 @@ import (
 	"os"
 	"time"
 
-	"gorm.io/driver/sqlite"
+	_ "github.com/ncruces/go-sqlite3/embed"
+	"github.com/ncruces/go-sqlite3/gormlite"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"
 )
@@ -28,7 +29,7 @@ func InitDatabase(dbPath string) {
 		},
 	)
 
-	DB, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{
+	DB, err = gorm.Open(gormlite.Open(dbPath), &gorm.Config{
 		Logger: newLogger, // Use the configured logger
 	})
 	if err != nil {

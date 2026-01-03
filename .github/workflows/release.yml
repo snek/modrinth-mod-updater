@@ -11,18 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        goos: [linux, windows]
-        goarch: [amd64, arm64]
         include:
-          - goos: windows
-            goarch: amd64
-            ext: .exe
           - goos: linux
             goarch: amd64
             ext: ""
           - goos: linux
             goarch: arm64
             ext: ""
+          - goos: windows
+            goarch: amd64
+            ext: .exe
 
     steps:
       - name: Checkout code
@@ -43,6 +41,7 @@ jobs:
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
 
       - name: Upload artifact ${{ matrix.goos }}/${{ matrix.goarch }}
         uses: actions/upload-artifact@v4
