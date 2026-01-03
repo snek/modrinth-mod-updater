@@ -9,7 +9,7 @@ var defaultCmd = &cobra.Command{
 	Use:   "default",
 	Short: "Default command when no subcommand is provided",
 	Long:  `Runs the update command by default for backwards compatibility.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		// Simply run the update command with default parameters
 		updateCmd.Run(updateCmd, []string{})
 	},

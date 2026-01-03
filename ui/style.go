@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+
 	"github.com/charmbracelet/lipgloss"
 )
 

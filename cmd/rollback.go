@@ -25,7 +25,7 @@ Example: modrinth-mod-updater rollback sodium
 This will remove the current version of the mod and
 replace it with the most recent previous version.`,
 	Args: cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, args []string) {
 		projectSlug := args[0]
 		rollbackMod(projectSlug)
 	},

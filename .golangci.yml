@@ -1,0 +1,37 @@
+linters:
+  disable-all: true
+  enable:
+    - gocritic      # The "code smell" king
+    - gocyclo       # Finds "God Functions" (SRP)
+    - gocognit      # Finds hard-to-follow logic
+    - funlen        # Keeps functions small (SRP)
+    - interfacebloat # Keeps interfaces lean (ISP)
+    - ireturn       # Enforces idiomatic DIP
+    - misspell      # Basic quality
+    - dogsled       # Finds too many blank identifiers
+    - errcheck      # Checks for unhandled errors
+    - staticcheck   # General static analysis
+    - unused        # Checks for unused constants, variables, functions and types
+    - govet         # Standard go tool for vet logic
+    - revive        # Replacement for golint
+    - goimports     # Fixes imports
+
+run:
+  timeout: 5m
+  tests: true
+
+linters-settings:
+  funlen:
+    lines: 100
+    statements: 50
+  gocyclo:
+    min-complexity: 15
+  gocognit:
+    min-complexity: 20
+  misspell:
+    locale: US
+  ireturn:
+    allow:
+      - error
+      - stdlib
+      - github.com/charmbracelet/bubbletea.Model

@@ -5,13 +5,9 @@ import (
 	"os"
 	"time"
 
-	_ "modrinth-mod-updater/logger"
-
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"
-	_ "go.uber.org/zap"
-	_ "go.uber.org/zap/zapcore"
 )
 
 var DB *gorm.DB
@@ -24,11 +20,11 @@ func InitDatabase(dbPath string) {
 	newLogger := gormlogger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // Use standard log writer (os.Stdout)
 		gormlogger.Config{
-			SlowThreshold:             time.Second,   // Slow SQL threshold
+			SlowThreshold:             time.Second,     // Slow SQL threshold
 			LogLevel:                  gormlogger.Warn, // Log level (Warn, Error, Info)
-			IgnoreRecordNotFoundError: true,          // Ignore ErrRecordNotFound error
-			ParameterizedQueries:      false,         // Log SQL queries with params
-			Colorful:                  true,          // Enable color
+			IgnoreRecordNotFoundError: true,            // Ignore ErrRecordNotFound error
+			ParameterizedQueries:      false,           // Log SQL queries with params
+			Colorful:                  true,            // Enable color
 		},
 	)
 

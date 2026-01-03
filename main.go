@@ -9,6 +9,6 @@ import (
 
 func main() {
 	logger.InitLogger() // Initialize the logger first
-	defer logger.Sync()   // Ensure logs are flushed on exit
+	defer logger.Sync() // Ensure logs are flushed on exit
 	cmd.Execute()
 }

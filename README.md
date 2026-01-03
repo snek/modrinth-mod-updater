@@ -49,12 +49,86 @@ When updates are found, the tool will:
 4. Download the new version
 5. Update the database with the new information
 
+## Building
+
+### Using Makefile (Recommended)
+
+The project includes a Makefile for convenient building:
+
+```bash
+# Build with verbose output and parallel compilation (recommended)
+make build
+
+# Quick build without verbose output
+make build-quick
+
+# Install to system
+make install
+
+# Clean build artifacts
+make clean
+
+# Show all available targets
+make help
+```
+
+### Manual Build
+
+**Quick Build:**
+```bash
+go build -o modrinth-mod-updater .
+```
+
+**Optimized Build:**
+```bash
+go build -v -x -p $(nproc) -o modrinth-mod-updater .
+```
+
+**Build Flags:**
+- `-v`: Verbose output - shows packages being built
+- `-x`: Print commands - shows exactly what Go is doing
+- `-p $(nproc)`: Use all available CPU cores for parallel compilation
+- `-o modrinth-mod-updater`: Output executable name
+
+### Cross-Platform Builds
+
+Build for different platforms:
+
+```bash
+# Windows
+GOOS=windows GOARCH=amd64 go build -o modrinth-mod-updater.exe .
+
+# macOS
+GOOS=darwin GOARCH=amd64 go build -o modrinth-mod-updater .
+
+# Linux ARM64
+GOOS=linux GOARCH=arm64 go build -o modrinth-mod-updater .
+```
+
+### Installation
+
+After building, you can install the executable to your system PATH:
+
+```bash
+# Install to /usr/local/bin
+sudo install modrinth-mod-updater /usr/local/bin/
+
+# Or install to ~/.local/bin (ensure ~/.local/bin is in your PATH)
+install modrinth-mod-updater ~/.local/bin/
+```
+
 ## Usage
 
 ### Update
 
 ```
 go run . update
+```
+
+Or if you built the executable:
+
+```
+./modrinth-mod-updater update
 ```
 
 This will:
@@ -67,7 +141,39 @@ This will:
 Flags:
 - `--force` or `-f`: Force redownload of all mods regardless of current version
 
+### GUI
+
+```
+./modrinth-mod-updater gui
+```
+
+Or with `go run`:
+
+```
+go run . gui
+```
+
+Launch an interactive terminal UI to view and manage your followed mods. The GUI displays:
+- **Mod Name**: Title of the mod/shader/resource pack
+- **Installed**: Currently installed version ID
+- **Available**: Latest available version number
+- **Status**: One of:
+  - `up-to-date` (green) - Latest version is installed
+  - `update-available` (yellow) - New version available
+  - `not-installed` (red) - Mod is followed but not installed
+
+**Keyboard Controls:**
+- `↑` or `k`: Navigate up
+- `↓` or `j`: Navigate down
+- `q`: Quit the GUI
+
 ### Rollback
+
+```
+./modrinth-mod-updater rollback [projectSlug]
+```
+
+Or with `go run`:
 
 ```
 go run . rollback [projectSlug]
@@ -80,7 +186,12 @@ This will:
 4. Update the database to reflect the rollback
 
 For example:
+```bash
+./modrinth-mod-updater rollback sodium
 ```
+
+Or with `go run`:
+```bash
 go run . rollback sodium
 ```
 

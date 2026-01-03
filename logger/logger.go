@@ -19,13 +19,13 @@ func InitLogger() {
 		TimeKey:        "T", // Keep time key brief
 		LevelKey:       "L",
 		NameKey:        "N",
-		CallerKey:      "", // Disable caller key
+		CallerKey:      "",              // Disable caller key
 		FunctionKey:    zapcore.OmitKey, // Disable function key
 		MessageKey:     "M",
 		StacktraceKey:  "S",
 		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.CapitalLevelEncoder,                            // INFO, WARN, etc.
-		EncodeTime:     zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05"),     // Simpler time format
+		EncodeLevel:    zapcore.CapitalLevelEncoder,                        // INFO, WARN, etc.
+		EncodeTime:     zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05"), // Simpler time format
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 		EncodeCaller:   zapcore.ShortCallerEncoder, // Won't be used due to empty CallerKey
 		// Customize how structured fields are encoded (key=value format)

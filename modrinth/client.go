@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"modrinth-mod-updater/config" // Use correct module path
+
 	"go.uber.org/zap"
 )
 
@@ -139,6 +140,16 @@ func (c *Client) GetProjectVersions(slug, projectType, gameVersion, loader strin
 	return versions, nil
 }
 
+// GetVersionByHash retrieves version information using the file's SHA1 hash.
+func (c *Client) GetVersionByHash(hash string) (*Version, error) {
+	var version Version
+	_, err := c.makeRequest("GET", fmt.Sprintf("/version_file/%s", hash), nil, &version, false, false)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get version by hash '%s': %w", hash, err)
+	}
+	return &version, nil
+}
+
 // GetProject retrieves details for a specific project.
 func (c *Client) GetProject(slug string) (*Project, error) {
 	var project Project
@@ -198,20 +209,21 @@ type User struct {
 // Project represents a Modrinth project
 type Project struct {
 	Slug        string `json:"slug"`
-	ID          string `json:"id"`         // Add Modrinth Project ID
+	ID          string `json:"id"` // Add Modrinth Project ID
 	Title       string `json:"title"`
-	IconURL     string `json:"icon_url"` // Add Icon URL
-	Color       int    `json:"color"`    // Add Color (integer representation)
-	Updated     string `json:"updated"`  // Add Last Updated Timestamp (string for simplicity)
+	IconURL     string `json:"icon_url"`     // Add Icon URL
+	Color       int    `json:"color"`        // Add Color (integer representation)
+	Updated     string `json:"updated"`      // Add Last Updated Timestamp (string for simplicity)
 	ProjectType string `json:"project_type"` // e.g., "mod"
-	ClientSide  string `json:"client_side"` // Added: required, optional, unsupported, unknown
-	ServerSide  string `json:"server_side"` // Added: required, optional, unsupported, unknown
+	ClientSide  string `json:"client_side"`  // Added: required, optional, unsupported, unknown
+	ServerSide  string `json:"server_side"`  // Added: required, optional, unsupported, unknown
 	// Add other fields as needed (description, etc.)
 }
 
 // Version represents a Modrinth project version (simplified).
 type Version struct {
 	ID            string `json:"id"`
+	ProjectID     string `json:"project_id"`
 	Name          string `json:"name"`
 	VersionNumber string `json:"version_number"`
 	Files         []File `json:"files"`

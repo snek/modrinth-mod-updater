@@ -1,22 +1,24 @@
 package db
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 // Mod represents a downloaded mod in the database
 type Mod struct {
 	gorm.Model
-	ProjectSlug string `gorm:"uniqueIndex"` // Modrinth Project Slug (unique identifier)
-	ProjectID   string // Modrinth Project ID
-	Title       string // Mod Title
-	IconURL     string // Mod Icon URL
-	Color       int    // Mod Color
-	Updated     time.Time // Last time the mod was updated on Modrinth
-	VersionID   string // Modrinth Version ID
-	FileName    string // Downloaded file name
-	InstallPath string // Path where the mod is currently installed
+	ProjectSlug   string    `gorm:"uniqueIndex"` // Modrinth Project Slug (unique identifier)
+	ProjectID     string    // Modrinth Project ID
+	Title         string    // Mod Title
+	IconURL       string    // Mod Icon URL
+	Color         int       // Mod Color
+	Updated       time.Time // Last time the mod was updated on Modrinth
+	VersionID     string    // Modrinth Version ID
+	VersionNumber string    // Human-readable version number
+	FileName      string    // Downloaded file name
+	InstallPath   string    // Path where the mod is currently installed
 }
 
 // ModVersion represents a historical version of a mod
